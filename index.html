@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<!-- saved from url=(0225)https://preview-%2Dsteak-house-ritual.base44.app/?hide_badge=true&base44_data_env=prod&server_url=https%3A%2F%2Fpreview-%2Dsteak-house-ritual.base44.app&_b44_commit=e701e76b410afe15e5417eccf64df80c88a1e36d&previewFE_version=1 -->
+<html lang="pt-BR"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script>
+    (function() {
+        var buffer = window.__base44_preview_native_failures;
+        if (!buffer || buffer.version !== 1 || !Array.isArray(buffer.entries)) {
+            buffer = { version: 1, entries: [], listenersInstalled: false };
+            window.__base44_preview_native_failures = buffer;
+        }
+        if (buffer.listenersInstalled) return;
+        function value(object, key) {
+            return object && typeof object[key] === 'string' ? object[key] : '';
+        }
+        function append(message) {
+            if (!message) return;
+            var normalizedMessage = String(message).slice(0, 5000);
+            for (var index = buffer.entries.length - 1; index >= 0; index--) {
+                var existing = buffer.entries[index];
+                if (existing && existing.level === 'error' && existing.message === normalizedMessage) {
+                    buffer.entries.splice(index, 1);
+                }
+            }
+            buffer.entries.push({
+                level: 'error',
+                message: normalizedMessage,
+                timestamp: Date.now()
+            });
+            if (buffer.entries.length > 100) {
+                buffer.entries.splice(0, buffer.entries.length - 100);
+            }
+        }
+        buffer.append = append;
+        function handleError(event) {
+            var target = event && event.target;
+            var tagName = value(target, 'tagName').toLowerCase() || 'window';
+            var isModule = tagName === 'script' && value(target, 'type').toLowerCase() === 'module';
+            var resourceType = isModule ? 'module' : tagName;
+            var url = value(target, 'src') || value(target, 'href') || value(event, 'filename');
+            var detail = value(event, 'message') || value(event && event.error, 'message');
+            var prefix = tagName === 'window' ? 'Native browser error' : 'Failed to load ' + resourceType;
+            append(prefix + (url ? ' ' + url : '') + (detail ? ': ' + detail : ''));
+        }
+        function rejectionReason(reason) {
+            if (typeof reason === 'string') return reason;
+            var message = value(reason, 'message');
+            if (message) return message;
+            try { return JSON.stringify(reason) || String(reason); }
+            catch (e) { return String(reason); }
+        }
+        function handleRejection(event) {
+            append('Unhandled promise rejection: ' + rejectionReason(event && event.reason));
+        }
+        function handleCspViolation(event) {
+            var blockedUri = value(event, 'blockedURI') || 'resource';
+            var directive = value(event, 'violatedDirective');
+            append('Content Security Policy blocked ' + blockedUri + (directive ? ' (' + directive + ')' : ''));
+        }
+        function overlayText(root, selector) {
+            var element = root && root.querySelector(selector);
+            return value(element, 'textContent').trim();
+        }
+        function captureViteOverlay(overlay) {
+            var root = overlay && overlay.shadowRoot;
+            var message = overlayText(root, '.message-body');
+            if (!message) return;
+            var plugin = overlayText(root, '.plugin');
+            var details = ['Vite build error: ' + (plugin ? plugin + ' ' : '') + message];
+            var file = overlayText(root, '.file');
+            var frame = overlayText(root, '.frame');
+            var stack = overlayText(root, '.stack');
+            if (file) details.push('File: ' + file);
+            if (frame) details.push(frame);
+            if (stack) details.push(stack);
+            append(details.join(String.fromCharCode(10)));
+        }
+        function captureViteOverlays(node) {
+            if (!node || node.nodeType !== 1) return;
+            if (node.matches && node.matches('vite-error-overlay')) captureViteOverlay(node);
+            if (!node.querySelectorAll) return;
+            var overlays = node.querySelectorAll('vite-error-overlay');
+            for (var index = 0; index < overlays.length; index++) captureViteOverlay(overlays[index]);
+        }
+        window.addEventListener('error', handleError, true);
+        window.addEventListener('unhandledrejection', handleRejection);
+        window.addEventListener('securitypolicyviolation', handleCspViolation);
+        if (typeof MutationObserver !== 'undefined' && document.documentElement) {
+            captureViteOverlays(document.documentElement);
+            new MutationObserver(function(records) {
+                for (var recordIndex = 0; recordIndex < records.length; recordIndex++) {
+                    var nodes = records[recordIndex].addedNodes;
+                    for (var nodeIndex = 0; nodeIndex < nodes.length; nodeIndex++) {
+                        captureViteOverlays(nodes[nodeIndex]);
+                    }
+                }
+            }).observe(document.documentElement, { childList: true, subtree: true });
+        }
+        buffer.listenersInstalled = true;
+    })();
+    </script>
+    <script data-preview-data-env-pin="true">
+    (function() {
+        var KEY = 'base44_data_env';
+        var APP_API_PATH = "/api/apps/6abcfb1b36e14cf8ad464334/";
+        var STORAGE_KEY = KEY + ':' + APP_API_PATH;
+        var API_ORIGINS = ["https://app.base44.com", "https://base44.app"].map(function(u) { return new URL(u).origin; });
+        var REQUEST_INIT_KEYS = [
+            'method', 'headers', 'credentials', 'mode', 'cache', 'redirect',
+            'referrer', 'referrerPolicy', 'integrity', 'keepalive', 'signal', 'priority',
+        ];
+        var env = new URLSearchParams(window.location.search).get(KEY);
+        try {
+            if (env === 'dev' || env === 'prod') sessionStorage.setItem(STORAGE_KEY, env);
+            else env = sessionStorage.getItem(STORAGE_KEY);
+        } catch (e) {}
+        if (env !== 'dev' && env !== 'prod') return;
+        function pin(url) {
+            try {
+                var u = new URL(url, window.location.href);
+                if (u.origin !== window.location.origin && API_ORIGINS.indexOf(u.origin) === -1) return url;
+                if (!u.pathname.startsWith(APP_API_PATH)) return url;
+                // Privileged function/agent routes trust this app's Preview host,
+                // not a dev parameter sent to the generic SDK API origin.
+                if (u.origin !== window.location.origin && (
+                    u.pathname.startsWith(APP_API_PATH + 'functions/') ||
+                    u.pathname.startsWith(APP_API_PATH + 'agents/')
+                )) {
+                    u = new URL(u.pathname + u.search + u.hash, window.location.origin);
+                }
+                u.searchParams.set(KEY, env);
+                return u.toString();
+            } catch (e) { return url; }
+        }
+        var origFetch = window.fetch;
+        window.fetch = function(input, init) {
+            if (typeof input === 'string' || input instanceof URL) {
+                return origFetch.call(this, pin(String(input)), init);
+            }
+            if (!input || !input.url) return origFetch.call(this, input, init);
+            var pinned = pin(input.url);
+            if (pinned === input.url) return origFetch.call(this, input, init);
+            try {
+                input = new Request(input, init);
+                if (!input.keepalive || !input.body) {
+                    return origFetch.call(this, new Request(pinned, input));
+                }
+                // RequestInit exposes an existing body as a stream, which Fetch
+                // forbids with keepalive. Buffer only that case, after init overrides.
+                var self = this;
+                return input.blob().then(function(body) {
+                    var rebuilt = { body: body };
+                    REQUEST_INIT_KEYS.forEach(function(key) {
+                        if (input[key] !== undefined) rebuilt[key] = input[key];
+                    });
+                    return origFetch.call(self, new Request(pinned, rebuilt));
+                });
+            } catch (error) { return Promise.reject(error); }
+        };
+        var origOpen = XMLHttpRequest.prototype.open;
+        XMLHttpRequest.prototype.open = function(method, url) {
+            arguments[1] = pin(String(url));
+            return origOpen.apply(this, arguments);
+        };
+    })();
+    </script><script defer="" data-preview-inject="true" data-app-id="6abcfb1b36e14cf8ad464334" data-preview-type="latest_preview" data-rum-app-id="db50c921-10c3-4f12-bccb-950fa174b708" data-rum-client-token="pubfe8a4f2972b412b4556fd67e77f82cb4" data-dd-site="datadoghq.com" src="./builder-bridge.js.download"></script>
+    <script>
+    (function() {
+        var IGNORE = { SCRIPT: 1, STYLE: 1, LINK: 1, META: 1, NOSCRIPT: 1, TEMPLATE: 1 };
+        const fire = () => window.parent.postMessage({ type: 'IFRAME_CONTENT_READY' }, '*');
+        function check() {
+            var body = document.body;
+            if (!body) return false;
+            for (var idx = 0; idx < body.children.length; idx++) {
+                if (!IGNORE[body.children[idx].tagName]) return true;
+            }
+            return false;
+        }
+        function start() {
+            if (check()) { fire(); return; }
+            var observer = new MutationObserver(function() {
+                if (check()) { fire(); observer.disconnect(); }
+            });
+            observer.observe(document.documentElement, { childList: true, subtree: true });
+        }
+        if (document.body) { start(); }
+        else { document.addEventListener('DOMContentLoaded', start, { once: true }); }
+    })();
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        var APP_ID = "6abcfb1b36e14cf8ad464334";
+        var PREVIEW_TYPE = "latest_preview";
+        var on404 = false;
+        var booted = false;
+        function detect() { return !!document.querySelector('[data-source-location^="PageNotFound:"]'); }
+        function payload() { return { app_id: APP_ID, preview_type: PREVIEW_TYPE, url_path: window.location.pathname }; }
+        function tick() {
+            var now = detect();
+            if (now && !on404) {
+                on404 = true;
+                window.parent.postMessage({ type: 'PREVIEW_PAGE_NOT_FOUND', payload: payload() }, '*');
+            } else if (!now && (on404 || !booted)) {
+                // On first tick of a fresh document, emit a cleared signal even when
+                // not currently on a 404 — the parent may have latched is404=true from
+                // a previous document at the same URL (e.g. after an iframe reload).
+                on404 = false;
+                window.parent.postMessage({ type: 'PREVIEW_PAGE_NOT_FOUND_CLEARED', payload: payload() }, '*');
+            }
+            booted = true;
+        }
+        function start() {
+            tick();
+            new MutationObserver(tick).observe(document.body, { childList: true, subtree: true });
+        }
+        if (document.body) { start(); }
+        else { document.addEventListener('DOMContentLoaded', start, { once: true }); }
+    })();
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        function postUnsupported(reason) {
+            window.parent.postMessage({
+                type: 'IFRAME_FIRST_CONTENTFUL_PAINT_UNSUPPORTED',
+                payload: { reason: reason, userAgent: navigator.userAgent }
+            }, '*');
+        }
+        if (typeof PerformanceObserver === 'undefined') {
+            postUnsupported('no_performance_observer');
+            return;
+        }
+        try {
+            var obs = new PerformanceObserver(function(list) {
+                var entries = list.getEntries();
+                for (var i = 0; i < entries.length; i++) {
+                    if (entries[i].name === 'first-contentful-paint') {
+                        obs.disconnect();
+                        window.parent.postMessage({ type: 'IFRAME_FIRST_CONTENTFUL_PAINT' }, '*');
+                        return;
+                    }
+                }
+            });
+            obs.observe({ type: 'paint', buffered: true });
+        } catch (e) {
+            postUnsupported('observe_threw:' + (e && e.name ? e.name : 'Error'));
+        }
+    })();
+    </script>
+    <script>
+    (function() {
+        if (window.self === window.top) return;
+        var lastUrl = window.location.href;
+        function notify() {
+            var url = window.location.href;
+            if (url === lastUrl) return;
+            lastUrl = url;
+            window.parent.postMessage({ type: 'APP_CHANGED_URL', url: url }, '*');
+        }
+        var origPush = history.pushState.bind(history);
+        history.pushState = function() { origPush.apply(history, arguments); notify(); };
+        var origReplace = history.replaceState.bind(history);
+        history.replaceState = function() { origReplace.apply(history, arguments); notify(); };
+        window.addEventListener('popstate', notify);
+        window.parent.postMessage({ type: 'APP_CHANGED_URL', url: window.location.href }, '*');
+    })();
+    </script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEAK MY HOUSE — O Altar Primal</title>
+    <meta name="description" content="STEAK MY HOUSE. Um santuário de fogo, carne e magnetismo social. Brutalismo rítmico, cortes curados, coquetéis noturnos.">
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="./css2" rel="stylesheet">
+    <script type="module" crossorigin="" src="./index-BfZkTPUP.js.download"></script>
+    <link rel="stylesheet" crossorigin="" href="./index-UzYvXgiE.css">
+    <script type="module">
+if (window.self === window.top) {
+  let lastPath = "";
+  function getPageNameFromPath(path) {
+    const segments = path.split("/").filter(Boolean);
+    return segments[0] || null;
+  }
+  function trackPageView() {
+    const path = window.location.pathname;
+    if (path === lastPath) return;
+    lastPath = path;
+    const pageName = getPageNameFromPath(path) || "home";
+    const appId = "6abcfb1b36e14cf8ad464334";
+    if (!appId) return;
+    fetch(`/api/app-logs/${appId}/log-user-in-app/${pageName}`, {
+      method: "POST",
+    }).catch(() => {});
+  }
+  const originalPushState = history.pushState.bind(history);
+  history.pushState = function (...args) {
+    originalPushState(...args);
+    trackPageView();
+  };
+  const originalReplaceState = history.replaceState.bind(history);
+  history.replaceState = function (...args) {
+    originalReplaceState(...args);
+    trackPageView();
+  };
+  window.addEventListener("popstate", trackPageView);
+  trackPageView();
+}
+</script>
+  <script src="./datadog-rum.js.download"></script><script src="./datadog-logs.js.download"></script><script src="./datadog-rum.js.download"></script></head>
+  <body>
+    <div id="root"><div class="bg-carbon min-h-screen"><div class="grain-overlay" aria-hidden="true"></div><div class="blood-flow sear-line" aria-hidden="true" style="transform: scaleY(0.0874763);"></div><nav class="fixed top-0 left-0 right-0 z-50 mix-blend-difference"><div class="flex items-center justify-between px-6 md:px-12 py-5"><a href="https://preview--steak-house-ritual.base44.app/?hide_badge=true&amp;base44_data_env=prod&amp;server_url=https%3A%2F%2Fpreview--steak-house-ritual.base44.app&amp;_b44_commit=e701e76b410afe15e5417eccf64df80c88a1e36d&amp;previewFE_version=1#top" class="font-mono-tech text-xs uppercase tracking-[0.3em] text-steel">SMH<span class="text-molten">●</span></a><div class="hidden md:flex gap-8"><a href="https://preview--steak-house-ritual.base44.app/?hide_badge=true&amp;base44_data_env=prod&amp;server_url=https%3A%2F%2Fpreview--steak-house-ritual.base44.app&amp;_b44_commit=e701e76b410afe15e5417eccf64df80c88a1e36d&amp;previewFE_version=1#menu" class="font-mono-tech text-xs uppercase tracking-[0.2em] text-steel hover:text-molten transition">Menu</a><a href="https://preview--steak-house-ritual.base44.app/?hide_badge=true&amp;base44_data_env=prod&amp;server_url=https%3A%2F%2Fpreview--steak-house-ritual.base44.app&amp;_b44_commit=e701e76b410afe15e5417eccf64df80c88a1e36d&amp;previewFE_version=1#reserve" class="font-mono-tech text-xs uppercase tracking-[0.2em] text-steel hover:text-molten transition">Reserva</a><a href="https://preview--steak-house-ritual.base44.app/?hide_badge=true&amp;base44_data_env=prod&amp;server_url=https%3A%2F%2Fpreview--steak-house-ritual.base44.app&amp;_b44_commit=e701e76b410afe15e5417eccf64df80c88a1e36d&amp;previewFE_version=1#gallery" class="font-mono-tech text-xs uppercase tracking-[0.2em] text-steel hover:text-molten transition">Galeria</a></div><button class="md:hidden font-mono-tech text-xs uppercase tracking-[0.2em] text-steel">☰</button></div></nav><section class="relative h-screen w-full overflow-hidden bg-carbon cursor-none" id="top"><div class="absolute inset-0"><span class="inline-block relative w-full h-full object-cover grayscale contrast-125 brightness-90" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./2d4da048a_generated_92546826.webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg/v1/fill/w_1504,h_858,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/2d4da048a_generated_92546826.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg/v1/fill/w_3008,h_1716,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/2d4da048a_generated_92546826.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg/v1/fill/w_4512,h_2574,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/2d4da048a_generated_92546826.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Costela sendo selada em macro detalhe"></span></span><div class="absolute inset-0 bg-carbon/40"></div></div><div class="pointer-events-none absolute h-72 w-72 rounded-full overflow-hidden border border-molten/60 transition-opacity duration-200 hidden md:block" style="left: 168px; top: 658px; opacity: 0; box-shadow: rgba(255, 68, 0, 0.4) 0px 0px 60px;"><span class="inline-block absolute inset-0 h-screen w-screen object-cover saturate-150 contrast-110" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg" style="width: 100vw; height: 100vh; max-width: none; transform: translate(-168px, -658px);"><span class="block relative w-full h-full overflow-hidden"><img src="./2d4da048a_generated_92546826(1).webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg/v1/fill/w_1519,h_858,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/2d4da048a_generated_92546826.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg/v1/fill/w_3038,h_1716,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/2d4da048a_generated_92546826.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/2d4da048a_generated_92546826.jpg/v1/fill/w_4557,h_2574,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/2d4da048a_generated_92546826.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt=""></span></span></div><div class="relative z-10 h-full w-full flex flex-col justify-between p-6 md:p-12"><div class="flex items-start justify-between"><h1 class="font-display font-medium leading-[0.85] text-steel text-6xl sm:text-8xl md:text-[9rem] tracking-tight">STEAK</h1><div class="font-mono-tech text-[10px] md:text-xs text-slate-muted text-right leading-relaxed mt-3"><div>EST. 2026</div><div class="text-molten">● IGNITION</div><div>JUATUBA / MG</div></div></div><div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6"><div class="max-w-md"><p class="font-mono-tech text-xs text-slate-muted uppercase tracking-[0.3em] mb-3">O Altar Primal</p><p class="text-steel/80 text-lg md:text-xl font-light leading-relaxed">Fogo. Carne. Magnetismo social. Um ritual noturno onde o<span class="italic font-display text-molten"> brutalismo </span>encontra a <span class="italic font-display">curadoria</span>.</p></div><h1 class="font-display font-medium leading-[0.85] text-steel text-6xl sm:text-8xl md:text-[9rem] tracking-tight text-right">MY HOUSE</h1></div></div><div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 font-mono-tech text-[10px] text-slate-muted uppercase tracking-[0.3em] animate-pulse">↓ Role para o ritual</div></section><section id="menu" class="relative bg-carbon py-20 md:py-32 px-6 md:px-12"><div class="flex items-center gap-4 mb-12"><span class="font-mono-tech text-xs text-molten">02 /</span><span class="font-mono-tech text-xs uppercase tracking-[0.3em] text-slate-muted">The Meat Ledger</span><div class="flex-1 h-px bg-steel/15"></div></div><div class="flex gap-8 mb-10 border-b border-steel/10 pb-4"><button class="font-display text-2xl md:text-4xl italic transition-colors text-molten">Comida</button><button class="font-display text-2xl md:text-4xl italic transition-colors text-steel/40 hover:text-steel">Bebidas</button></div><div class="grid md:grid-cols-2 gap-8 md:gap-16 items-start"><div class="md:sticky md:top-10 self-start overflow-hidden"><div class="aspect-[3/4] relative group"><span class="inline-block relative w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./86d970c24_generated_dd5d4fef.webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg/v1/fill/w_672,h_896,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/86d970c24_generated_dd5d4fef.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg/v1/fill/w_1344,h_1792,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/86d970c24_generated_dd5d4fef.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg/v1/fill/w_2016,h_2688,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/86d970c24_generated_dd5d4fef.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Comida"></span></span><div class="absolute inset-0 bg-carbon/20"></div><div class="absolute bottom-4 left-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-steel/80">Comida</div></div></div><div class="flex flex-col"><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Carnes (por 100g)</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">01</span>Picanha Argentina</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 22,00</span></div><p class="text-steel/50 text-sm mt-1">Mínimo 200g</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">02</span>Bife Ancho</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 18,00</span></div><p class="text-steel/50 text-sm mt-1">Mínimo 200g</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">03</span>Chorizo</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 18,00</span></div><p class="text-steel/50 text-sm mt-1">Mínimo 200g</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">04</span>Picanha Suína</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 14,00</span></div><p class="text-steel/50 text-sm mt-1">Mínimo 200g</p></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Espetos</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">05</span>Coraçãozinho</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div><p class="text-steel/50 text-sm mt-1">Acompanha molho e farofa</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">06</span>Medalhão de Frango</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div><p class="text-steel/50 text-sm mt-1">Acompanha molho e farofa</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">07</span>Queijo Muçarela</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div><p class="text-steel/50 text-sm mt-1">Acompanha molho e farofa</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">08</span>Tulipa</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div><p class="text-steel/50 text-sm mt-1">Acompanha molho e farofa</p></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Entradas</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">09</span>Pão de Alho</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">10</span>Anel de Cebola</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 25,90</span></div><p class="text-steel/50 text-sm mt-1">10 un</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">11</span>Coxinhas de Frango - Salgado</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 39,90</span></div><p class="text-steel/50 text-sm mt-1">10 un</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">12</span>Bolinho Steak</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 44,90</span></div><p class="text-steel/50 text-sm mt-1">Bolinho de tilápia da casa - 10 un</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">13</span>Bolinho de Bacalhau</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 49,90</span></div><p class="text-steel/50 text-sm mt-1">10 un</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">14</span>Camafeu</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 54,90</span></div><p class="text-steel/50 text-sm mt-1">Camarão empanado com requeijão - 10 un</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">15</span>Linguiça Caseira de Pernil com Muçarela</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 54,90</span></div><p class="text-steel/50 text-sm mt-1">Pimenta biquinho, provolone, bacon</p></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Macarrão</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">16</span>À Bolonhesa - Individual</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 28,90</span></div><p class="text-steel/50 text-sm mt-1">Carne moída e queijo muçarela</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">17</span>Na Chapa - Individual</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 28,90</span></div><p class="text-steel/50 text-sm mt-1">Frango, bacon, calabresa, vinagrete e muçarela</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">18</span>Na Chapa - G</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 49,90</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">19</span>Na Chapa - GG</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 69,90</span></div></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Caldos</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">20</span>Mandioca</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 20,00</span></div><p class="text-steel/50 text-sm mt-1">Torrada, torresmo e cebolinha</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">21</span>Feijão</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 20,00</span></div><p class="text-steel/50 text-sm mt-1">Torrada, torresmo e cebolinha</p></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Porções</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">22</span>Batata Frita P</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 28,90</span></div><p class="text-steel/50 text-sm mt-1">Bacon e queijo muçarela</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">23</span>Batata Frita G</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 34,90</span></div><p class="text-steel/50 text-sm mt-1">Bacon, muçarela e cheddar</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">24</span>Batata Frita GG</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 44,90</span></div><p class="text-steel/50 text-sm mt-1">Bacon, muçarela, cheddar e calabresa</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">25</span>Mandioca P</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 28,90</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">26</span>Contra Filé + Batata/Mandioca</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 84,90</span></div><p class="text-steel/50 text-sm mt-1">2 pessoas</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">27</span>Contra Filé + Batata/Mandioca</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 109,90</span></div><p class="text-steel/50 text-sm mt-1">4 pessoas</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">28</span>Filé de Tilápia</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 59,90</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">29</span>Filé de Tilápia + Batata/Mandioca</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 74,90</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">30</span>Costela de Boi com Muçarela</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 139,90</span></div><p class="text-steel/50 text-sm mt-1">Batata frita</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">31</span>Picanha + Batata/Mandioca</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 174,90</span></div><p class="text-steel/50 text-sm mt-1">Arroz e vinagrete</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">32</span>Big Steak</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 219,90</span></div><p class="text-steel/50 text-sm mt-1">Contra filé, filé de frango, linguiça, picanha suína, tilápia, coraçãozinho, batata frita, mandioca, cebola empanada, azeitona, ovo de codorna, muçarela e molho especial</p></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Almoço &amp; Jantar</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">33</span>Filé Mignon à Parmegiana</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 39,90</span></div><p class="text-steel/50 text-sm mt-1">Arroz, salada tropical, batata frita ou purê</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">34</span>Filé de Tilápia Grelhada</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 39,90</span></div><p class="text-steel/50 text-sm mt-1">Arroz, feijão, farofa, salada, batata frita ou purê</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">35</span>Steak de Picanha</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 44,90</span></div><p class="text-steel/50 text-sm mt-1">Arroz, vinagrete, batata frita ou purê</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">36</span>Salmão Grelhado - Alho Poró/Maracujá</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 49,90</span></div><p class="text-steel/50 text-sm mt-1">Arroz, batata sauté ou purê e salada</p></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Acréscimos</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">37</span>Bacon / Queijo Muçarela</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 8,00</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">38</span>Cheddar</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 8,00</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">39</span>Arroz / Vinagrete / Purê / Ovo de Codorna</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">40</span>Batata Frita - 200g</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 15,00</span></div></article></div><div class="mb-8"><h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">Sobremesas &amp; Sucos</h4><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">41</span>Petit Gateau</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 29,90</span></div></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">42</span>Suco Natural - 300ml</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 14,00</span></div><p class="text-steel/50 text-sm mt-1">Laranja, abacaxi, acerola, maracujá, morango, limão</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">43</span>Suco Natural - Jarra</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 30,00</span></div><p class="text-steel/50 text-sm mt-1">Limão</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">44</span>Suco Natural - Jarra</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 38,90</span></div><p class="text-steel/50 text-sm mt-1">Abacaxi, acerola, maracujá, morango, laranja</p></article><article class="group py-4 border-b border-steel/10 last:border-0"><div class="flex items-baseline justify-between gap-4"><h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors"><span class="font-mono-tech text-[10px] text-slate-muted mr-3">45</span>Suco Natural - Jarra</h3><span class="font-mono-tech text-molten text-sm whitespace-nowrap">R$ 44,90</span></div><p class="text-steel/50 text-sm mt-1">Dois sabores</p></article></div></div></div><p class="font-mono-tech text-[10px] text-slate-muted uppercase tracking-[0.2em] mt-4 max-w-2xl">Este estabelecimento cobra couvert artístico de R$10,00 em dias de show ao vivo. Taxa de rolha: R$50,00.</p></section><section id="reserve" class="relative bg-carbon px-6 md:px-12 py-20 md:py-32"><div class="flex items-center gap-4 mb-12"><span class="font-mono-tech text-xs text-molten">03 /</span><span class="font-mono-tech text-xs uppercase tracking-[0.3em] text-slate-muted">Ritual Booking</span><div class="flex-1 h-px bg-steel/15"></div></div><div class="max-w-3xl"><h2 class="font-display text-5xl md:text-7xl text-steel leading-[0.95] mb-6">Garanta seu lugar<br><span class="italic text-molten">no altar.</span></h2><p class="text-steel/60 text-lg max-w-xl mb-8">Reservas confirmadas em segundos. Toque no selo incandescente abaixo para iniciar o ritual.</p></div></section><div class="fixed bottom-0 left-0 right-0 z-50 px-4 pb-4 pointer-events-none"><div class="mx-auto max-w-2xl pointer-events-auto"><button class="w-full flex items-center justify-between bg-molten text-carbon px-6 py-4 font-mono-tech text-xs md:text-sm uppercase tracking-[0.2em] hover:brightness-110 transition shadow-[0_-10px_40px_hsl(16_100%_50%/0.3)]"><span>● Reserve sua mesa</span><span class="hidden sm:inline">Seg—Sex 17h · Sáb—Dom 11h</span></button></div></div><section id="gallery" class="relative bg-carbon py-20 md:py-32 overflow-hidden"><div class="px-6 md:px-12 mb-12 flex items-center gap-4"><span class="font-mono-tech text-xs text-molten">04 /</span><span class="font-mono-tech text-xs uppercase tracking-[0.3em] text-slate-muted">Social Pulse</span><div class="flex-1 h-px bg-steel/15"></div></div><div class="flex gap-4 md:gap-6 overflow-x-auto px-6 md:px-12 pb-6 scrollbar-hide snap-x snap-mandatory"><figure class="snap-center shrink-0 relative overflow-hidden group h-64 md:h-80 w-72 md:w-96"><span class="inline-block relative w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/ba0797ac7_generated_ec099676.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./ba0797ac7_generated_ec099676.webp" alt="" aria-hidden="true" class="w-full h-full inset-0 absolute" style="object-fit: cover; filter: blur(10px); transform: scale(1.1);"><img src="./ba0797ac7_generated_ec099676(1).webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/ba0797ac7_generated_ec099676.jpg/v1/fill/w_384,h_320,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/ba0797ac7_generated_ec099676.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/ba0797ac7_generated_ec099676.jpg/v1/fill/w_768,h_640,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/ba0797ac7_generated_ec099676.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/ba0797ac7_generated_ec099676.jpg/v1/fill/w_1152,h_960,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/ba0797ac7_generated_ec099676.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Interior do bar com brasa acesa"></span></span><div class="absolute inset-0 bg-carbon/30 group-hover:bg-transparent transition"></div><figcaption class="absolute bottom-3 left-3 font-mono-tech text-[9px] uppercase tracking-widest text-steel/70">01 — Interior do bar com brasa acesa</figcaption></figure><figure class="snap-center shrink-0 relative overflow-hidden group h-80 md:h-96 w-48 md:w-56"><span class="inline-block relative w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/f35e22632_generated_5f8fbcdb.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./f35e22632_generated_5f8fbcdb.webp" alt="" aria-hidden="true" class="w-full h-full inset-0 absolute" style="object-fit: cover; filter: blur(10px); transform: scale(1.1);"><img src="./f35e22632_generated_5f8fbcdb(1).webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/f35e22632_generated_5f8fbcdb.jpg/v1/fill/w_224,h_384,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/f35e22632_generated_5f8fbcdb.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/f35e22632_generated_5f8fbcdb.jpg/v1/fill/w_448,h_768,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/f35e22632_generated_5f8fbcdb.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/f35e22632_generated_5f8fbcdb.jpg/v1/fill/w_672,h_1152,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/f35e22632_generated_5f8fbcdb.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Brasa da grelha a lenha"></span></span><div class="absolute inset-0 bg-carbon/30 group-hover:bg-transparent transition"></div><figcaption class="absolute bottom-3 left-3 font-mono-tech text-[9px] uppercase tracking-widest text-steel/70">02 — Brasa da grelha a lenha</figcaption></figure><figure class="snap-center shrink-0 relative overflow-hidden group h-64 w-64 md:h-72 md:w-72"><span class="inline-block relative w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/4e3b5e510_generated_8f17f05f.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./4e3b5e510_generated_8f17f05f.webp" alt="" aria-hidden="true" class="w-full h-full inset-0 absolute" style="object-fit: cover; filter: blur(10px); transform: scale(1.1);"><img src="./4e3b5e510_generated_8f17f05f(1).webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/4e3b5e510_generated_8f17f05f.jpg/v1/fill/w_288,h_288,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/4e3b5e510_generated_8f17f05f.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/4e3b5e510_generated_8f17f05f.jpg/v1/fill/w_576,h_576,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/4e3b5e510_generated_8f17f05f.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/4e3b5e510_generated_8f17f05f.jpg/v1/fill/w_864,h_864,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/4e3b5e510_generated_8f17f05f.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Faca cortando bife raro"></span></span><div class="absolute inset-0 bg-carbon/30 group-hover:bg-transparent transition"></div><figcaption class="absolute bottom-3 left-3 font-mono-tech text-[9px] uppercase tracking-widest text-steel/70">03 — Faca cortando bife raro</figcaption></figure><figure class="snap-center shrink-0 relative overflow-hidden group h-80 md:h-96 w-48 md:w-56"><span class="inline-block relative w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/c0d12731e_generated_a2948cd9.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./c0d12731e_generated_a2948cd9.webp" alt="" aria-hidden="true" class="w-full h-full inset-0 absolute" style="object-fit: cover; filter: blur(10px); transform: scale(1.1);"><img src="./c0d12731e_generated_a2948cd9(1).webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/c0d12731e_generated_a2948cd9.jpg/v1/fill/w_224,h_384,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/c0d12731e_generated_a2948cd9.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/c0d12731e_generated_a2948cd9.jpg/v1/fill/w_448,h_768,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/c0d12731e_generated_a2948cd9.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/c0d12731e_generated_a2948cd9.jpg/v1/fill/w_672,h_1152,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/c0d12731e_generated_a2948cd9.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Coquetel servido no balcão de pedra"></span></span><div class="absolute inset-0 bg-carbon/30 group-hover:bg-transparent transition"></div><figcaption class="absolute bottom-3 left-3 font-mono-tech text-[9px] uppercase tracking-widest text-steel/70">04 — Coquetel servido no balcão de pedra</figcaption></figure><figure class="snap-center shrink-0 relative overflow-hidden group h-64 md:h-80 w-72 md:w-96"><span class="inline-block relative w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" data-base44-image="" data-base44-image-src="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg"><span class="block relative w-full h-full overflow-hidden"><img src="./86d970c24_generated_dd5d4fef(1).webp" alt="" aria-hidden="true" class="w-full h-full inset-0 absolute" style="object-fit: cover; filter: blur(10px); transform: scale(1.1);"><img src="./86d970c24_generated_dd5d4fef(2).webp" srcset="https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg/v1/fill/w_384,h_320,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/86d970c24_generated_dd5d4fef.webp 1x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg/v1/fill/w_768,h_640,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/86d970c24_generated_dd5d4fef.webp 2x, https://media.base44.com/images/public/6abcfb1b36e14cf8ad464334/86d970c24_generated_dd5d4fef.jpg/v1/fill/w_1152,h_960,al_c,q_90,usm_0.66_1.00_0.01,enc_webp,quality_auto/86d970c24_generated_dd5d4fef.webp 3x" loading="lazy" class="w-full h-full inset-0 absolute object-cover" alt="Ribeye curado em prato de concreto"></span></span><div class="absolute inset-0 bg-carbon/30 group-hover:bg-transparent transition"></div><figcaption class="absolute bottom-3 left-3 font-mono-tech text-[9px] uppercase tracking-widest text-steel/70">05 — Ribeye curado em prato de concreto</figcaption></figure></div><p class="px-6 md:px-12 font-mono-tech text-[10px] text-slate-muted uppercase tracking-[0.3em] mt-4">→ Arraste horizontalmente</p></section><footer class="relative bg-carbon border-t border-steel/10 overflow-hidden pt-16"><div class="px-6 md:px-12 grid md:grid-cols-3 gap-10 pb-16"><div><p class="font-mono-tech text-[10px] uppercase tracking-[0.3em] text-molten mb-3">Coordenadas</p><a href="https://maps.google.com/?q=Steak+My+House,+R.+M%C3%A1rio+Teixeira,+50+-+Juatuba,+MG" target="_blank" rel="noopener noreferrer" class="block text-steel/80 leading-relaxed hover:text-molten transition">R. Mário Teixeira, 50<br>Centro, Juatuba — MG<br><span class="font-mono-tech text-sm text-slate-muted">2MW5+J7 · Como chegar ↗</span></a></div><div><p class="font-mono-tech text-[10px] uppercase tracking-[0.3em] text-molten mb-3">Horário</p><p class="text-steel/80 leading-relaxed">Todos os dias<br>Seg—Sex · 17h00 — 00h00<br><span class="text-slate-muted text-sm">Sáb—Dom · 11h00 — 00h00</span></p></div><div><p class="font-mono-tech text-[10px] uppercase tracking-[0.3em] text-molten mb-3">Contato</p><p class="text-steel/80 leading-relaxed"><a href="tel:+5531985778154" class="hover:text-molten transition underline-offset-4 hover:underline">+55 31 98577-8154</a><br><a href="https://api.whatsapp.com/send/?phone=553185778154" target="_blank" rel="noopener noreferrer" class="hover:text-molten transition underline-offset-4 hover:underline">WhatsApp ↗</a><br><a href="https://www.instagram.com/steakmyhouse/" target="_blank" rel="noopener noreferrer" class="text-slate-muted text-sm hover:text-molten transition">@steakmyhouse ↗</a></p></div></div><div class="relative border-y border-steel/10 py-6 overflow-hidden"><div class="marquee-track"><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span><span class="font-display font-medium text-outline text-[14vw] leading-none whitespace-nowrap px-4">STEAK MY HOUSE<span class="text-molten mx-6">●</span></span></div></div><div class="px-6 md:px-12 py-6 flex flex-col md:flex-row justify-between gap-3 font-mono-tech text-[10px] uppercase tracking-widest text-slate-muted"><span>© 2026 STEAK MY HOUSE — O Altar Primal</span><span>Construído com fogo · Brutalismo Rítmico</span></div></footer></div><div role="region" aria-label="Notifications (F8)" tabindex="-1" style="pointer-events: none;"><ol tabindex="-1" class="fixed top-0 z-[100] flex max-h-screen w-full flex-col-reverse p-4 sm:bottom-0 sm:right-0 sm:top-auto sm:flex-col md:max-w-[420px]"></ol></div></div>
+  
+
+<script>
+(() => {
+  const menuSection = document.querySelector('#menu');
+  if (!menuSection) return;
+
+  const tabs = [...menuSection.querySelectorAll('button')].filter((btn) =>
+    ['Comida', 'Bebidas'].includes(btn.textContent.trim())
+  );
+
+  if (!tabs.length) return;
+
+  const menuData = {
+    food: {
+      label: 'Comida',
+      image: 'https://scontent-gru2-2.cdninstagram.com/v/t39.30808-6/760124329_122186095544783579_2347058871909192084_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=105&ig_cache_key=Mzk1MzU2OTEyNDk1NzQwOTYzNQ%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=6IeywRdh6dsQ7kNvwFyuFwq&_nc_oc=Adp6puDYc95gn2kp6oEz5k8Qev-y0C2wnsIxFaWDddzbf4HYIa0urYjpAWyeqcPYFMM&_nc_zt=23&_nc_ht=scontent-gru2-2.cdninstagram.com&_nc_gid=IjuxGNTslxUALrLOyLSjbw&_nc_ss=78689&oh=00_AQOV4kf5nK7YXGBcoStBpaYMgKmMK4BNXG4Hbwxc0NCysg&oe=6AC3477C',
+      alt: 'Comida',
+      sections: [
+        {
+          title: 'Carnes (por 100g)',
+          items: [
+            { name: 'Picanha Argentina', note: 'Mínimo 200g', price: 'R$ 22,00' },
+            { name: 'Bife Ancho', note: 'Mínimo 200g', price: 'R$ 18,00' },
+            { name: 'Chorizo', note: 'Mínimo 200g', price: 'R$ 18,00' },
+            { name: 'Picanha Suína', note: 'Mínimo 200g', price: 'R$ 14,00' }
+          ]
+        },
+        {
+          title: 'Espetos',
+          items: [
+            { name: 'Coraçãozinho', note: 'Acompanha molho e farofa', price: 'R$ 15,00' },
+            { name: 'Medalhão de Frango', note: 'Acompanha molho e farofa', price: 'R$ 15,00' },
+            { name: 'Queijo Muçarela', note: 'Acompanha molho e farofa', price: 'R$ 15,00' },
+            { name: 'Tulipa', note: 'Acompanha molho e farofa', price: 'R$ 15,00' }
+          ]
+        },
+        {
+          title: 'Entradas',
+          items: [
+            { name: 'Pão de Alho', price: 'R$ 15,00' },
+            { name: 'Anel de Cebola', note: '10 un', price: 'R$ 25,90' },
+            { name: 'Coxinhas de Frango - Salgado', note: '10 un', price: 'R$ 39,90' }
+          ]
+        }
+      ]
+    },
+    drinks: {
+      label: 'Bebidas',
+      image: 'https://scontent-gru2-1.cdninstagram.com/v/t39.30808-6/494654304_122127017066783579_8436760369767824351_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=109&ig_cache_key=MzYyMzAzMTEyOTcwMzM3MzU0NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=KysSvoynmW0Q7kNvwF6RiUH&_nc_oc=Adpl0QbXIWsJmrXOChlT10i2Nt_-f7tavZhh5cd7NyibUi4cZiTrTBN09PAZJIkluBU&_nc_zt=23&_nc_ht=scontent-gru2-1.cdninstagram.com&_nc_gid=k9Wrzs0_Da0JtTpqJOJ5TA&_nc_ss=78689&oh=00_AQNFctoQ7e4fxGjuHO2fEOVm4T2LEhQNUtGTK8WAcrSi0A&oe=6AC34AC2',
+      alt: 'Bebidas',
+      sections: [
+        {
+          title: 'Drinks',
+          items: [
+            { name: 'Caipirinha', note: 'Limão', price: 'R$ 18,90' },
+            { name: 'Cozumel', note: 'Corona, gin, sal e limão', price: 'R$ 29,90' },
+            { name: 'Gin Tônica - Nacional', price: 'R$ 31,90' },
+            { name: 'Angel Pee', note: 'Cachaça Ypióca, leite condensado, laranja e limão', price: 'R$ 29,90' }
+          ]
+        },
+        {
+          title: 'Destilados (dose)',
+          items: [
+            { name: 'Cachaça da Roça', price: 'R$ 7,00' },
+            { name: 'Conhaque', price: 'R$ 12,00' },
+            { name: 'Whisky', note: 'Red Label, Cavalo Branco, Ballantine\'s', price: 'R$ 25,00' },
+            { name: 'Licor Sheridan\'s', price: 'R$ 35,00' }
+          ]
+        },
+        {
+          title: 'Cervejas',
+          items: [
+            { name: 'Amstel - Latão', price: 'R$ 8,00' },
+            { name: 'Heineken - Latão', price: 'R$ 11,00' },
+            { name: 'Budweiser Alcoólica/Zero - Long Neck', price: 'R$ 13,00' },
+            { name: 'Corona - Long Neck', price: 'R$ 13,00' },
+            { name: 'Heineken - 600ml', price: 'R$ 18,00' }
+          ]
+        }
+      ]
+    }
+  };
+
+  function renderItem(item) {
+    const noteMarkup = item.note ? `<p class="text-steel/50 text-sm mt-1">${item.note}</p>` : '';
+    return `
+      <article class="group py-4 border-b border-steele/10 last:border-0">
+        <div class="flex items-baseline justify-between gap-4">
+          <h3 class="font-display text-xl md:text-2xl text-steel group-hover:text-molten transition-colors">
+            <span class="font-mono-tech text-[10px] text-slate-muted mr-3">${String(item.number).padStart(2, '0')}</span>${item.name}
+          </h3>
+          <span class="font-mono-tech text-molten text-sm whitespace-nowrap">${item.price}</span>
+        </div>
+        ${noteMarkup}
+      </article>
+    `;
+  }
+
+  function renderMenu(key) {
+    const data = menuData[key];
+    if (!data) return;
+
+    const grid = menuSection.querySelector('.grid');
+    if (!grid) return;
+
+    const itemMarkup = data.sections.map((section) => {
+      const itemsMarkup = section.items.map((item, index) => renderItem({ ...item, number: index + 1 })).join('');
+      return `
+        <div class="mb-8">
+          <h4 class="font-mono-tech text-xs uppercase tracking-[0.3em] text-molten mb-3">${section.title}</h4>
+          ${itemsMarkup}
+        </div>
+      `;
+    }).join('');
+
+    grid.innerHTML = `
+      <div class="md:sticky md:top-10 self-start overflow-hidden">
+        <div class="aspect-[3/4] relative group">
+          <span class="inline-block relative w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+            <span class="block relative w-full h-full overflow-hidden">
+              <img src="${data.image}" class="w-full h-full inset-0 absolute object-cover" style="object-fit: contain" alt="${data.alt}" loading="lazy">
+            </span>
+          </span>
+          <div class="absolute inset-0 bg-carbon/20"></div>
+          <div class="absolute bottom-4 left-4 font-mono-tech text-[10px] uppercase tracking-[0.3em] text-steel/80">${data.label}</div>
+        </div>
+      </div>
+      <div class="flex flex-col">${itemMarkup}</div>
+    `;
+
+    tabs.forEach((button) => {
+      const isActive = button.textContent.trim() === data.label;
+      button.className = `font-display text-2xl md:text-4xl italic transition-colors ${isActive ? 'text-molten' : 'text-steel/40 hover:text-steel'}`;
+      button.setAttribute('aria-pressed', String(isActive));
+    });
+  }
+
+  tabs.forEach((button) => {
+    button.addEventListener('click', () => {
+      const key = button.textContent.trim() === 'Bebidas' ? 'drinks' : 'food';
+      renderMenu(key);
+    });
+  });
+
+  renderMenu('food');
+})();
+</script>
+<script>
+(() => {
+  const galleryImages = [
+    'https://scontent-gru2-2.cdninstagram.com/v/t51.71878-15/773696212_1677412930029292_7659646322802135849_n.jpg?stp=dst-jpg_e15_tt6&_nc_cat=102&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkNMSVBTLnhwaWRzLjY0MC5zZHIudmlkZW9fYWRkaXRpb25hbF9jb3Zlcl9mcmFtZS5DMyJ9&_nc_ohc=zjW82DHccQ4Q7kNvwHl9q_U&_nc_oc=Adqlj5bLq058SJQkHvIHSF9BPyKKC9xYQX8LfVQyFg3XVAixYHBXwyh39mMwEseCX94&_nc_zt=23&_nc_ht=scontent-gru2-2.cdninstagram.com&_nc_gid=9SAlQ1ZbDnn3kN18TM3yEw&_nc_ss=78689&oh=00_AQN5Uw4JiRSJTm8hz2tXf9T70ATSkoLbB2VG5ypoAOHiCw&oe=6AC333EF',
+    'https://scontent-gru2-1.cdninstagram.com/v/t39.30808-6/701785469_122178713516783579_7679765464706380030_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=107&ig_cache_key=Mzg5Nzc5NDQ2MzcyOTMxNzg1Nw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=KN5r3lvoF_sQ7kNvwGniJsG&_nc_oc=Adot4-6qgMXANiamm2OzA9qAcmL92O3Eq3mVi1xnt5zOaz2SCtjx20ul9v7F3Kw3Vkk&_nc_zt=23&_nc_ht=scontent-gru2-1.cdninstagram.com&_nc_gid=EhpyY8SLqS3veKu7j9J8qw&_nc_ss=78689&oh=00_AQPFPYLmByCJi2m-Ls7Ui7Bip809WFfFjDCJVr_Seg4jXQ&oe=6AC32931',
+    'https://scontent-gru1-2.cdninstagram.com/v/t39.30808-6/684845485_122177197310783579_2244189213491870284_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=Mzg4NjkzMDU2ODkxMTgxMzEyNw%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=CdFT2zhpELsQ7kNvwE6UtDZ&_nc_oc=AdrATFeaXCeUA0rBBrLReBjQQDyjgBCZOthjF33Bn20T6M7u4h-NlXVEoYzh9zxPOHw&_nc_zt=23&_nc_ht=scontent-gru1-2.cdninstagram.com&_nc_gid=gwToZphoSUAS8dxo0XqfcQ&_nc_ss=78689&oh=00_AQOegTBX3c8dzETfWlLwoZ9Xml_8cbuXk-BAR3q6yYULOQ&oe=6AC35F54',
+    'https://scontent-gru1-2.cdninstagram.com/v/t39.30808-6/497722597_122130167672783579_1303812190470663179_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=MzYzMzkzMTQxNzE4MTU0MDk4NA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=EvKKgoQn8YYQ7kNvwGZ23WH&_nc_oc=Adql4fz19SY8VnR7YAT08qWwsjYhqNAZFvacrk3RQw5-Z4iEe_qc3KlsUw0FJ2OhmMQ&_nc_zt=23&_nc_ht=scontent-gru1-2.cdninstagram.com&_nc_gid=NuTN5eO3TExnuzB2yfJK-Q&_nc_ss=78689&oh=00_AQMap8Hm9jhG7xDC1pNYmAmPGQsqlQErba3KVsaNq9Epzw&oe=6AC32E7F',
+    'https://scontent-gru1-2.cdninstagram.com/v/t39.30808-6/767268817_122187449402783579_6675441894600657306_n.jpg?stp=dst-jpg_e35_tt6&_nc_cat=103&ig_cache_key=Mzk2MzY5NTkwMjkwOTE2OTAzNA%3D%3D.3-ccb7-5&ccb=7-5&_nc_sid=58cdad&efg=eyJ2ZW5jb2RlX3RhZyI6IkZFRUQueHBpZHMuMTA4MC5zZHIucmVndWxhcl9waG90by5DMyJ9&_nc_ohc=TVzSUcfJ-1gQ7kNvwGk5_LP&_nc_oc=AdqH12Ot35ZzWSSX61f1hXiE0kiBYE1oUTa8_iR0tTwcYuPaLYKJz7zhkh-CMfjmf4s&_nc_zt=23&_nc_ht=scontent-gru1-2.cdninstagram.com&_nc_gid=Q-Gmp3PDxnB7Exlm_-eHFA&_nc_ss=78689&oh=00_AQOwQQT8TM_AHUgf8LLkTSph6m2urKfI2S5hHjzdr2g71g&oe=6AC33722'
+  ];
+  const galleryCaptions = [
+    '01 — FACHADA DA STEAK MY HOUSE',
+    '02 — PORÇÕES PARA COMPARTILHAR',
+    '03 — A BRASA JÁ ESTÁ ACESA',
+    '04 — PÃO DE ALHO DA CASA',
+    '05 — DRINKS DA STEAK MY HOUSE'
+  ];
+
+  const figures = document.querySelectorAll('#gallery figure');
+  figures.forEach((figure, index) => {
+    const imgs = figure.querySelectorAll('img');
+    const url = galleryImages[index];
+    const caption = galleryCaptions[index];
+    const wrapper = figure.querySelector('[data-base44-image]');
+    const overlay = figure.querySelector(':scope > div.absolute.inset-0');
+
+    figure.classList.remove('overflow-hidden', 'h-64', 'md:h-80');
+    figure.classList.add('flex', 'flex-col');
+    figure.style.height = 'auto';
+    figure.style.overflow = 'visible';
+
+    if (wrapper) {
+      wrapper.classList.remove('inline-block', 'h-full', 'group-hover:scale-105');
+      wrapper.classList.add('block', 'h-64', 'md:h-80', 'overflow-hidden');
+    }
+
+    if (overlay && wrapper) wrapper.appendChild(overlay);
+
+    imgs.forEach((img) => {
+      if (img !== imgs[imgs.length - 1]) {
+        img.style.display = 'none';
+        return;
+      }
+
+      img.src = url;
+      img.srcset = url;
+      img.loading = 'lazy';
+      img.style.width = '100%';
+      img.style.height = '100%';
+      img.style.objectFit = 'contain';
+      img.style.objectPosition = 'center';
+      img.style.display = 'block';
+      img.alt = caption.replace(/^\d+\s+—\s+/, '');
+    });
+
+    const captionElement = figure.querySelector('figcaption');
+    if (captionElement) {
+      captionElement.textContent = caption;
+      captionElement.style.position = 'static';
+      captionElement.style.bottom = 'auto';
+      captionElement.style.left = 'auto';
+      captionElement.style.display = 'block';
+      captionElement.style.marginTop = '12px';
+      captionElement.style.width = '100%';
+    }
+
+    if (wrapper) {
+      wrapper.setAttribute('data-base44-image-src', url);
+      wrapper.style.backgroundImage = 'none';
+      wrapper.style.transform = 'none';
+      wrapper.classList.remove('group-hover:scale-105');
+    }
+  });
+})();
+</script>
+<script>
+(() => {
+  const replacements = new Map([
+    ['Um ritual noturno onde o', 'Uma experiência noturna onde o'],
+    ['Role para o ritual', 'Role para a experiência'],
+    ['Ritual Booking', 'Experiência e Reservas'],
+    ['iniciar o ritual.', 'iniciar a sua experiência.']
+  ]);
+  const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+
+  while (walker.nextNode()) {
+    const text = walker.currentNode.textContent;
+    for (const [from, to] of replacements) {
+      if (text.includes(from)) {
+        walker.currentNode.textContent = text.replace(from, to);
+        break;
+      }
+    }
+  }
+
+  const heroCopy = [...document.querySelectorAll('p')].find((paragraph) =>
+    paragraph.textContent.includes('onde o brutalismo encontra a curadoria')
+  );
+  if (heroCopy) {
+    heroCopy.textContent = heroCopy.textContent.replace(
+      'onde o brutalismo encontra a curadoria.',
+      'onde o maior objetivo é o seu sorriso!'
+    );
+  }
+})();
+</script>
+</body></html>
